@@ -166,8 +166,7 @@ void SeqListPrint(SeqList *ps)
 }
 
 // 要求：时间复杂度：O(N) 空间复杂度 O(1)
-/*
-void SeqListRemoveAll(SeqList* ps, SLDataType x)
+void SeqListRemoveAll_1(SeqList* ps, SLDataType x)
 {
 	assert(ps);
 
@@ -183,14 +182,41 @@ void SeqListRemoveAll(SeqList* ps, SLDataType x)
 		while (*right == x && left < right)
 		{
 			--right;
+			count++;
 		}
-		SLDataType tmp = *left;
-		*left = *right;
-		*right = tmp;
-		count++;
+		if (*left == x && *right != x)
+		{
+			SLDataType tmp = *left;
+			*left = *right;
+			*right = tmp;
+			count++;
+			--right;
+		}
+		
 	}
 	ps->size -= count;
-}*/
+} 
+
+void SeqListRemoveAll_2(SeqList* ps, SLDataType x)
+{
+	assert(ps);
+
+	SLDataType *ptr = &(ps->array[0]);
+	int i = 0;
+	int count = 0;
+	for (i = 0; i < ps->size; ++i)
+	{
+		if (ps->array[i] != x)
+		{
+			*ptr++ = ps->array[i];
+		}
+		else
+		{
+			++count;
+		}
+	}
+	ps->size -= count;
+}
 
 
 void SeqListTest(SeqList *ps)
@@ -211,13 +237,13 @@ void SeqListTest(SeqList *ps)
 	SeqListPushBack(ps, 1);
 	SeqListPushBack(ps, 2);
 	SeqListPushBack(ps, 3);
-	SeqListPushBack(ps, 4);
+	SeqListPushBack(ps, 2);
 	SeqListPushBack(ps, 5);
 	SeqListPushBack(ps, 6);
 	SeqListPushBack(ps, 7);
 	SeqListPushBack(ps, 2);
-	SeqListPushBack(ps, 8);
-	SeqListPushBack(ps, 9);
+	SeqListPushBack(ps, 2);
+	SeqListPushBack(ps, 2);
 
 	//SeqListBubbleSort(ps);
 	SeqListPrint(ps);
@@ -234,8 +260,8 @@ void SeqListTest(SeqList *ps)
 	printf("%d\n", SeqListBinaryFind(ps, 9));
 	printf("%d\n", SeqListBinaryFind(ps, 10));*/
 
-	/*SeqListRemoveAll(ps, 2);
-	SeqListPrint(ps);*/
+	SeqListRemoveAll_1(ps, 2);
+	SeqListPrint(ps);
 
 	//printf("%d\n", SeqListFind(ps, -1));
 

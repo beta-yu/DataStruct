@@ -32,7 +32,9 @@ void SeqListModify(SeqList *ps, size_t pos, SLDataType x);
 void SeqListBubbleSort(SeqList *ps);
 int SeqListBinaryFind(SeqList *ps, SLDataType x);
 
-void SeqListRemoveAll(SeqList* ps, SLDataType x);
+void SeqListRemoveAll_1(SeqList* ps, SLDataType x);
+void SeqListRemoveAll_2(SeqList* ps, SLDataType x);
+
 void SeqListPrint(SeqList *ps);
 
 void SeqListTest(SeqList *ps);
