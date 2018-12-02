@@ -144,6 +144,44 @@ void SListRemove(SList *plist, SLTDataType x)
 	}
 }
 
+void SListRemoveAll(SList *plist, SLTDataType val)
+{
+	while (plist->_head->_data == val)
+	{
+		SListNode *ret = plist->_head->_next;
+		free(plist->_head);
+		plist->_head = ret;
+		if (plist->_head == NULL)
+		{
+			return;
+		}
+	}
+	SListNode *cur = plist->_head;
+
+	while (cur->_next)
+	{
+		SListNode *ret = cur->_next;
+		if (ret->_data == val)
+		{
+			cur->_next = ret->_next;
+			free(ret);
+		}
+		cur = cur->_next;
+		if (cur == NULL)
+		{
+			return;
+		}
+	}
+}
+
+void SListEraseAfter(SListNode *pos)
+{
+	assert(pos && pos->_next);
+	struct SListNode *next = pos->_next->_next;
+	free(pos->_next);
+	pos->_next = next;
+}
+
 void SListTest()
 {
 	SList *plist = (SList *)malloc(sizeof(SList));
@@ -151,13 +189,17 @@ void SListTest()
 	SListPushFront(plist, 1);
 	SListPushFront(plist, 2);
 	SListPushFront(plist, 3);
-	SListNode *cur = SListFind(plist, 1);
-	SListInsertAfter(cur, 0);
+	SListPushFront(plist, 4);
+	SListPushFront(plist, 5);
+
+	/*SListNode *cur = SListFind(plist, 1);
+	SListInsertAfter(cur, 0);*/
 	SListPrint(plist);
 	//SListPopFront(plist);
 	/*SListPopBack(plist);*/
-	SListRemove(plist, 1);
-
+	//SListRemove(plist, 1);
+	//SListRemoveAll(plist, 1);
+	SListEraseAfter(SListFind(plist, 4));
 	SListPrint(plist);
 	SListDestory(plist);
 }

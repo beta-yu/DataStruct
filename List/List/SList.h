@@ -31,8 +31,9 @@ SListNode* SListFind(SList *plist, SLTDataType x);
 void SListPopFront(SList *plist);
 void SListPopBack(SList *plist);
 void SListRemove(SList *plist, SLTDataType x);
+void SListRemoveAll(SList *plist, SLTDataType val);
 
-
+void SListEraseAfter(SListNode *pos);
 void SListTest();
 
 #endif //__SLIST_H__
