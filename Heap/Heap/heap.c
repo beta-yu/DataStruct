@@ -132,12 +132,30 @@ void HeapSort(int *a, int n)
 }
 
 //大top，构建有K个元素的小堆
-void TopK();
+void TopK(HPDataType *a, int k, int n)
+{
+	assert(a);
+	//构建k个元素的小堆
+	Heap hp;
+	//用数组前k个元素初始化堆
+    HeapInit(&hp, a, k);
+	int i = 0;
+	//从第k+1个元素和堆顶元素比较，大于堆顶元素的与堆顶元素交换，再从堆顶向下调整，直至遍历完所有元素
+	for (i = k; i < n; ++i)
+	{
+		if (a[i] > hp._array[0])
+		{
+			Swap(&a[i], &(hp._array[0]));
+			AdjustDown(hp._array, k, 0);
+		}
+	}
+	HeapPrint(&hp);
+}
 
 void HeapTest()
 {
 //	Heap hp;
-	int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+	int arr[100] = { 0 };
 	/*HeapInit(&hp, arr, sizeof(arr) / sizeof(arr[0]));
 	HeapPrint(&hp);
 
@@ -146,14 +164,30 @@ void HeapTest()
 
 	HeapPop(&hp);
 	HeapPrint(&hp);*/
-	int i = 0;
+	for (int i = 0; i < 100; ++i)
+	{
+		arr[i] = 100 - i;
+	}
+	arr[1] = 101;
+	arr[11] = 102;
+	arr[34] = 103;
+	arr[51] = 104;
+	arr[95] = 105;
+	arr[29] = 106;
+	arr[57] = 107;
+	arr[84] = 108;
+	arr[7] = 109;
+	arr[61] = 110;
+
+	TopK(arr, 10, 100);
+	/*int i = 0;
 	int sz = sizeof(arr) / sizeof(arr[0]);
-	HeapSort(arr, sz);
+	heapsort(arr, sz);
 	for (i = 0; i < sz; ++i)
 	{
 		printf("%d ", arr[i]);
 	}
-	printf("\n");
+	printf("\n");*/
 
 	//HeapDestory(&hp);
 }

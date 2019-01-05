@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 typedef int HPDataType;
 typedef struct Heap
@@ -23,7 +24,7 @@ void HeapPush(Heap *hp, HPDataType x);
 void HeapPop(Heap *hp);
 void AdjustUp(HPDataType *a, size_t child);
 void HeapSort(int *a, int n);
-void TopK();
+void TopK(HPDataType *a, int k, int n);
 
 void HeapTest();
 
