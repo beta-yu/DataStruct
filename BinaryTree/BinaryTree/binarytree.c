@@ -128,7 +128,52 @@ BTNode *BinaryTreeFind(BTNode* root, BTDataType x)
 //层序遍历
 void BinaryTreeLevelOrder(BTNode* root)
 {
+	assert(root);
+	Queue *q = (Queue *)malloc(sizeof(Queue));
+	QueueInit(q);
+	QueuePush(q, root);
+	while (!(QueueEmpty(q)))
+	{
+		BTNode *front = QueueFront(q);
+		QueuePop(q);
+		printf("%c ", front->_data);
+		if (front->_left != NULL)
+		{
+			QueuePush(q, front->_left);
+		}
+		if (front->_right != NULL)
+		{
+			QueuePush(q, front->_right);
+		}
+	}
+	printf("\n");
+	QueueDestory(q);
+}
 
+//判断是否为完全二叉树
+int BinaryTreeComplete(BTNode *root)
+{
+	assert(root);
+	Queue *q = (Queue *)malloc(sizeof(Queue));
+	QueueInit(q);
+	QueuePush(q, root);
+	while (!(QueueEmpty(q)))
+	{
+		QDataType front = QueueFront(q);
+		QueuePop(q);
+		if (front == NULL)
+		{
+			//如果队头出现NULL，则二叉树内所有节点都已经入队了
+			break;
+		}
+		QueuePush(q, front->_left);
+		QueuePush(q, front->_right);
+	}
+	if (q->_head == q->_tail)
+	{
+		return 1;
+	}
+	return 0;
 }
 
 void BinaryTreeTest()
@@ -146,4 +191,6 @@ void BinaryTreeTest()
 	//printf("%d\n", BinaryTreeSize(root));
 	//printf("%d\n", BinaryTreeLeafSize(root));
 	//printf("%d\n", BinaryTreeLevelKSize(root, 3));
+	BinaryTreeLevelOrder(root);
+	printf("%d\n", BinaryTreeComplete(root));
 }

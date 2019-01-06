@@ -3,15 +3,26 @@
 
 #include "common.h"
 
-typedef char QDataType;
+typedef BTNode * QDataType;
 typedef struct QNode
 {
 	QDataType _data;
 	struct QNode *_next;
 }QNode;
 
-QNode *QueueInit(QNode *qn);
-void QueuePush();
+typedef struct Queue
+{
+	QNode *_head;
+	QNode *_tail;
+}Queue;
 
-void QueueTest();
+void QueueInit(Queue *q);
+void QueueDestory(Queue *q);
+void QueuePush(Queue *q, QDataType x);
+void QueuePop(Queue *q);
+int QueueSize(Queue *q);
+int QueueEmpty(Queue *q);
+QDataType QueueFront(Queue *q);
+
+
 #endif //__QUEUE_H__
