@@ -4,8 +4,8 @@
 
 int main()
 {
-//	BinaryTreeTest();
+	BinaryTreeTest();
 //	QueueTest();
-	StackTest();
+//	StackTest();
 	return 0;
 }

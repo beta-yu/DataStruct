@@ -20,8 +20,16 @@ BTNode* BinaryTreeCreate(BTDataType *a, int *pi)
 }
 void BinaryTreeDestory(BTNode **root)
 {
-	assert(root);
+	//assert(root);
+	if (*root == NULL)
+	{
+		return;
+	}
 
+	BinaryTreeDestory(&((*root)->_left));
+	BinaryTreeDestory(&((*root)->_right));
+	free(*root);
+	*root = NULL;
 }
 
 //二叉树的节点总数
@@ -191,6 +199,7 @@ void BinaryTreeTest()
 	//printf("%d\n", BinaryTreeSize(root));
 	//printf("%d\n", BinaryTreeLeafSize(root));
 	//printf("%d\n", BinaryTreeLevelKSize(root, 3));
-	BinaryTreeLevelOrder(root);
-	printf("%d\n", BinaryTreeComplete(root));
+	/*BinaryTreeLevelOrder(root);
+	printf("%d\n", BinaryTreeComplete(root));*/
+	BinaryTreeDestory(&root);
 }
