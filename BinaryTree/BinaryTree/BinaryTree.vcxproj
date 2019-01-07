@@ -79,11 +79,13 @@
     <ClInclude Include="binarytree.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="Queue.h" />
+    <ClInclude Include="Stack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="binarytree.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Queue.c" />
+    <ClCompile Include="Stack.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

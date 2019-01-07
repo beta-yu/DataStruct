@@ -1,9 +1,11 @@
 #include "binarytree.h"
 #include "Queue.h"
+#include "Stack.h"
 
 int main()
 {
-	BinaryTreeTest();
+//	BinaryTreeTest();
 //	QueueTest();
+	StackTest();
 	return 0;
 }
