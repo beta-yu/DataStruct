@@ -76,9 +76,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\BinaryTree\BinaryTree\Stack.c" />
     <ClCompile Include="Test.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\BinaryTree\BinaryTree\Stack.h" />
     <ClInclude Include="Sort.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

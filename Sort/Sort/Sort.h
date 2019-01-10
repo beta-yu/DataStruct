@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include "Stack.h"
 
 void ArrayPrint(int *arr, int n)
 {
@@ -18,7 +19,6 @@ void Swap(int *a, int *b)
 	*a = *b;
 	*b = tmp;
 }
-
 //实现升序排列
 void InsertSort(int *arr, int n)
 {
@@ -144,6 +144,194 @@ void HeapSort(int *arr, int n)
 	}
 }
 
+void BubbleSort(int *arr, int n)
+{
+	int end = n;
+	while (end > 1)
+	{
+		int flag = 0;
+		for (int cur = 0; cur < end - 1; ++cur)
+		{
+			if (arr[cur] > arr[cur + 1])
+			{
+				flag = 1;
+				Swap(&arr[cur], &arr[cur + 1]);
+			}
+		}
+		if (flag == 0)
+			break;
+	}
+}
+
+int GetMid(int *arr, int begin, int end)
+{
+	int mid = begin + ((end - begin) >> 1);
+	if (arr[begin] > arr[mid])
+	{
+		if (arr[mid] > arr[end])
+			return mid;
+		else if (arr[begin] > arr[end])
+			return end;
+		else
+			return begin;
+	}
+	else
+	{
+		if (arr[begin] > arr[end])
+			return begin;
+		else if (arr[end] > arr[mid])
+			return mid;
+		else
+			return end;
+	}
+}
+
+/*
+PartSort()负责将数组中大于key的放在key的右边，小于key的放在key的左边
+key通过三数取中法（GetMid）获得，使得key的大小尽量接近中位数
+*/
+int PartSort1(int *arr, int begin, int end)
+{
+	int mid = GetMid(arr, begin, end);
+	Swap(&arr[begin], &arr[mid]);
+
+	int ret = begin;
+	int key = arr[begin];
+	while (begin < end)
+	{
+		//先从右开始找小
+		while (begin < end && arr[end] >= key)
+		{
+			--end;
+		}
+		//再从左开始找大
+		while (begin < end && arr[begin] <= key)
+		{
+			++begin;
+		}
+		//交换
+		if (begin < end)
+			Swap(&arr[begin], &arr[end]);
+	}
+	//当前值给开始位置
+	arr[ret] = arr[begin];
+	//中间值放在当前位置(相遇处)
+	arr[begin] = key;
+
+	return begin;
+}
+
+int PartSort2(int *arr, int begin, int end)
+{
+	int mid = GetMid(arr, begin, end);
+	Swap(&arr[begin], &arr[mid]);
+
+	int key = arr[begin];
+	//起始begin为坑
+	while (begin < end)
+	{
+		//从左开始找比key小的，将该数放到当前坑中，该位置变为坑
+		while (begin < end && arr[end] >= key)
+		{
+			--end;
+		}
+		arr[begin] = arr[end];
+
+		//再从右开始找比key大的，将该数放到当前坑中，该位置变为坑
+		while (begin < end && arr[begin] <= key)
+		{
+			++begin;
+		}
+		arr[end] = arr[begin];
+	}
+
+	arr[begin] = key;
+	return begin;
+}
+
+//前后指针法
+int PartSort3(int *arr, int begin, int end)
+{
+	int mid = GetMid(arr, begin, end);
+	Swap(&arr[begin], &arr[mid]);
+
+	int key = arr[begin];
+	int prev = begin;
+	int cur = prev + 1;
+	//cur找到小于key的就与prev交换
+	while (cur <= end)
+	{
+		//prev走过的都是小于key的
+		if (arr[cur] < key)
+		{
+			++prev;
+			if (prev != cur)
+			{
+				Swap(&arr[prev], &arr[cur]);
+			}
+		}
+		++cur;
+	}
+	//将最终prev处与起始处(key)互换
+	Swap(&arr[prev], &arr[begin]);
+	return prev;
+}
+
+void QuickSort(int *arr, int left, int right)
+{
+	if (left >= right)
+		return;
+	int mid;
+	
+	if (left < right)
+	{
+		if (right - left > 5)
+		{
+			mid = PartSort3(arr, left, right);
+
+			QuickSort(arr, left, mid - 1);
+			QuickSort(arr, mid + 1, right);
+		}
+		//减少递归层次，小区间直接使用插入排序
+		else
+		{
+			InsertSort(arr + left, right - left + 1);
+		}
+	}
+}
+
+//非递归实现快排
+void QuickSortNonR(int *arr, int left, int right)
+{
+	Stack *st = (Stack *)malloc(sizeof(Stack));
+	StackInit(st);
+	//将区间两端点压栈，注意顺序一致，压栈和出栈配合
+	StackPush(st, right);
+	StackPush(st, left);
+	while (StackEmpty(st) != 0)
+	{
+		int begin = StackTop(st);
+		StackPop(st);
+		int end = StackTop(st);
+		StackPop(st);
+		int div = PartSort1(arr, begin, end);
+
+		//[begin, div-1]
+		if (begin < div-1)
+		{
+			StackPush(st, div - 1);
+			StackPush(st, begin);
+		}
+
+		//[div+1, end]
+		if (div+1 < end)
+		{
+			StackPush(st, end);
+			StackPush(st, div + 1);
+		}
+	}
+}
+
 void SortTest()
 {
 	/*srand(time(0));
@@ -154,7 +342,10 @@ void SortTest()
 	{
 		arr[i] = rand();
 	}*/
-	int arr[] = { 9, 5, 2, 6, 5, 7, 3, 8, 4, 1 };
+	int arr[] = { 5, 9, 2, 6, 5, 7, 3, 8, 4, 1 };
+	//int arr[] = { 5, 8, 7, 6, 9, 5, 4, 3, 2, 1 };
+	//int arr[] = { 5, 6 };
+
 	int size = sizeof(arr) / sizeof(arr[0]);
 	//int begin = clock();
 	//ShellSort(arr, size);
@@ -162,6 +353,12 @@ void SortTest()
 	//int end = clock();
 	//printf("%d\n", end - begin);
 	//SelectSort(arr, size);
-	HeapSort(arr, size);
+	//HeapSort(arr, size);
+	//BubbleSort(arr, size);
+	//QuickSort(arr, 0, size - 1);
+	QuickSortNonR(arr, 0, size - 1);
+
+	//PartSort(arr, 0, size - 1);
 	ArrayPrint(arr, size);
+	//printf("%d\n", GetMid(arr, 0, size - 1));
 }
