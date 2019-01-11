@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "Stack.h"
+#include <string.h>
 
 void ArrayPrint(int *arr, int n)
 {
@@ -29,6 +30,7 @@ void InsertSort(int *arr, int n)
 		tmp = arr[end + 1];
 		while (end >= 0)
 		{
+			//大于才交换，等于不交换
 			if (arr[end] > tmp)
 			{
 				arr[end + 1] = arr[end];
@@ -78,21 +80,25 @@ void ShellSort(int *arr, int n)
 
 void SelectSort(int *arr, int n)
 {
-	int max = n - 1;
 	int min = 0;
-	while (min <= max)
+	int max = n-1;
+	//每趟选一个大的、一个小的
+	while (min < max)
 	{
-		for (int i = min; i < max; ++i)
+		for (int i = min; i <= max; ++i)
 		{
-			if (arr[i] > arr[max])
+			//找max时，让相等的两个数后面一个作为max被交换到最后
+			if (arr[i] >= arr[max])
 			{
 				Swap(&arr[i], &arr[max]);
 			}
+			//找min时，让相等的两个数前面一个作为min被交换到前面
 			if (arr[i] < arr[min])
 			{
 				Swap(&arr[i], &arr[min]);
 			}
 		}
+
 		min++;
 		max--;
 	}
@@ -152,6 +158,7 @@ void BubbleSort(int *arr, int n)
 		int flag = 0;
 		for (int cur = 0; cur < end - 1; ++cur)
 		{
+			//等于时不交换，保持稳定性
 			if (arr[cur] > arr[cur + 1])
 			{
 				flag = 1;
@@ -163,6 +170,7 @@ void BubbleSort(int *arr, int n)
 	}
 }
 
+//三数取中法
 int GetMid(int *arr, int begin, int end)
 {
 	int mid = begin + ((end - begin) >> 1);
@@ -332,6 +340,95 @@ void QuickSortNonR(int *arr, int left, int right)
 	}
 }
 
+void _MergeSort(int *arr, int left, int right, int *tmp)
+{
+	if (left >= right)
+		return;
+	int mid = left + ((right - left) >> 1);
+
+	_MergeSort(arr, left, mid, tmp);
+	_MergeSort(arr, mid + 1, right, tmp);
+
+	//[left, mid]  [mid+1, right]
+	int begin1 = left;
+	int end1 = mid;
+	int begin2 = mid + 1;
+	int end2 = right;
+	int ret = left;
+	//两个排好序的区间归并
+	while (begin1 <= end1 && begin2 <= end2)
+	{
+		//等于时为保证稳定性，先插入前面一个
+		if (arr[begin1] <= arr[begin2])
+		{
+			tmp[left++] = arr[begin1];
+			begin1++;
+		}
+		else
+		{
+			tmp[left++] = arr[begin2];
+			begin2++;
+		}
+	}
+	//当其中一个区间遍历完，把另一个区间中剩余元素都拷贝至tmp中
+	while (begin1 <= end1)
+	{
+		tmp[left++] = arr[begin1];
+		begin1++;
+	}
+	while (begin2 <= end2)
+	{
+		tmp[left++] = arr[begin2];
+		begin2++;
+	}
+	//将tmp中归并好的有序序列拷回原数组
+	while (ret <= right)
+	{
+		arr[ret] = tmp[ret];
+		ret++;
+	}
+}
+
+void MergeSort(int *arr, int n)
+{
+	//需要新开辟一个同等大小的空间用于两个区间的归并
+	int *tmp = (int *)malloc(sizeof(int)*n);
+	_MergeSort(arr, 0, n - 1, tmp);
+	free(tmp);
+}
+
+void CountSort(int *arr, int n)
+{
+	int max = arr[0];
+	int min = arr[0];
+	for (int i = 1; i < n; ++i)
+	{
+		if (arr[i] < min)
+			min = arr[i];
+		if (arr[i] > max)
+			max = arr[i];
+	}
+	int size = max - min + 1;
+	int *tmp = (int *)malloc(sizeof(int)* size);
+	memset(tmp, 0, sizeof(int) * size);
+	int begin = 0;
+	while (begin < n)
+	{
+		tmp[arr[begin] - min]++;
+		++begin;
+	}
+	begin = 0;
+	int left = 0;
+	while (begin < size)
+	{
+		while (tmp[begin]-- > 0)
+		{
+			arr[left++] = begin+1;
+		}
+		begin++;
+	}
+}
+
 void SortTest()
 {
 	/*srand(time(0));
@@ -342,9 +439,9 @@ void SortTest()
 	{
 		arr[i] = rand();
 	}*/
-	int arr[] = { 5, 9, 2, 6, 5, 7, 3, 8, 4, 1 };
+	//int arr[] = { 5, 9, 2, 6, 5, 7, 3, 8, 4, 1 };
 	//int arr[] = { 5, 8, 7, 6, 9, 5, 4, 3, 2, 1 };
-	//int arr[] = { 5, 6 };
+	int arr[] = { 6, 5 };
 
 	int size = sizeof(arr) / sizeof(arr[0]);
 	//int begin = clock();
@@ -352,11 +449,13 @@ void SortTest()
 	////InsertSort(arr, size);
 	//int end = clock();
 	//printf("%d\n", end - begin);
-	//SelectSort(arr, size);
+	SelectSort(arr, size);
 	//HeapSort(arr, size);
 	//BubbleSort(arr, size);
 	//QuickSort(arr, 0, size - 1);
-	QuickSortNonR(arr, 0, size - 1);
+	//QuickSortNonR(arr, 0, size - 1);
+	//MergeSort(arr, size);
+	//CountSort(arr, size);
 
 	//PartSort(arr, 0, size - 1);
 	ArrayPrint(arr, size);
